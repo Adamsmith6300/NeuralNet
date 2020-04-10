@@ -1,0 +1,15 @@
+C:\Users\Adam\Documents\code\bcit\term4\COMP4932-DigiPro\Assignment3\NeuralNet2\bin\Debug\netcoreapp3.1\NeuralNet2.exe
+C:\Users\Adam\Documents\code\bcit\term4\COMP4932-DigiPro\Assignment3\NeuralNet2\obj\Debug\netcoreapp3.1\NeuralNet2.csprojAssemblyReference.cache
+C:\Users\Adam\Documents\code\bcit\term4\COMP4932-DigiPro\Assignment3\NeuralNet2\obj\Debug\netcoreapp3.1\NeuralNet2.AssemblyInfoInputs.cache
+C:\Users\Adam\Documents\code\bcit\term4\COMP4932-DigiPro\Assignment3\NeuralNet2\obj\Debug\netcoreapp3.1\NeuralNet2.AssemblyInfo.cs
+C:\Users\Adam\Documents\code\bcit\term4\COMP4932-DigiPro\Assignment3\NeuralNet2\bin\Debug\netcoreapp3.1\NeuralNet2.deps.json
+C:\Users\Adam\Documents\code\bcit\term4\COMP4932-DigiPro\Assignment3\NeuralNet2\bin\Debug\netcoreapp3.1\NeuralNet2.runtimeconfig.json
+C:\Users\Adam\Documents\code\bcit\term4\COMP4932-DigiPro\Assignment3\NeuralNet2\bin\Debug\netcoreapp3.1\NeuralNet2.runtimeconfig.dev.json
+C:\Users\Adam\Documents\code\bcit\term4\COMP4932-DigiPro\Assignment3\NeuralNet2\bin\Debug\netcoreapp3.1\NeuralNet2.dll
+C:\Users\Adam\Documents\code\bcit\term4\COMP4932-DigiPro\Assignment3\NeuralNet2\bin\Debug\netcoreapp3.1\NeuralNet2.pdb
+C:\Users\Adam\Documents\code\bcit\term4\COMP4932-DigiPro\Assignment3\NeuralNet2\bin\Debug\netcoreapp3.1\Numpy.dll
+C:\Users\Adam\Documents\code\bcit\term4\COMP4932-DigiPro\Assignment3\NeuralNet2\bin\Debug\netcoreapp3.1\Python.Included.dll
+C:\Users\Adam\Documents\code\bcit\term4\COMP4932-DigiPro\Assignment3\NeuralNet2\bin\Debug\netcoreapp3.1\Python.Runtime.NETStandard.dll
+C:\Users\Adam\Documents\code\bcit\term4\COMP4932-DigiPro\Assignment3\NeuralNet2\obj\Debug\netcoreapp3.1\NeuralNet2.csproj.CopyComplete
+C:\Users\Adam\Documents\code\bcit\term4\COMP4932-DigiPro\Assignment3\NeuralNet2\obj\Debug\netcoreapp3.1\NeuralNet2.dll
+C:\Users\Adam\Documents\code\bcit\term4\COMP4932-DigiPro\Assignment3\NeuralNet2\obj\Debug\netcoreapp3.1\NeuralNet2.pdb
