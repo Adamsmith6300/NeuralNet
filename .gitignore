@@ -6,3 +6,4 @@ trainingData.nn
 train-labels.idx1-ubyte
 validationData.nn
 mnist.pkl.gz
+data/
