@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using Numpy;
 
@@ -10,9 +12,9 @@ namespace NeuralNet2
     class Network
     {
         public int[] sizes { get; set; }
-        int numLayers;
-        NDarray biases;
-        NDarray weights;
+        public int numLayers { get; set; }
+        public NDarray biases { get; set; }
+        public NDarray weights { get; set; }
         private static Random rng = new Random();
         public Network(int[] sizes)
         {
@@ -73,7 +75,13 @@ namespace NeuralNet2
                 if (test_data != null)
                 {
                     int passed_test = evaluate(test_data);
-                    Debug.WriteLine("Testing Epoch " + passed_test + "/" + n_test);
+                    double percent = ((double)passed_test / n_test)*100;
+                    Debug.WriteLine("Testing Epoch " + percent +"%");
+                    //if(percent > 93.0)
+                    //{
+                    //    SerializeNetwork(this, "../../../data/network.nn");
+                    //    test_data = null;
+                    //}
                 } else
                 {
                     Debug.WriteLine("Epoch " + i + " complete.");
@@ -236,6 +244,13 @@ namespace NeuralNet2
             return count;
         }
 
+        public byte evaluateSample(NDarray sample)
+        {
+            var result = np.argmax(feedforward(sample));
+            var scalar = np.asscalar<byte>(result);
+            return scalar;
+        }
+
         public NDarray feedforward(NDarray a)
         {
             for (int i = 0; i < this.biases.size; ++i)
@@ -272,5 +287,28 @@ namespace NeuralNet2
         {
             return (output_activations - y);
         }
+
+        public static void SerializeNetwork(Network net, string fileName)
+        {
+            var data = Tuple.Create(net.sizes, net.numLayers, net.biases, net.weights);
+            FileStream f =
+                 new FileStream(fileName,
+                 FileMode.Create);
+            BinaryFormatter b = new BinaryFormatter();
+            b.Serialize(f, data);
+            f.Close();
+        }
+
+        public static (int[], int, NDarray, NDarray) DeSerializeNetwork(string fileName)
+        {
+            FileStream f =
+                 new FileStream(fileName,
+                 FileMode.Open);
+            BinaryFormatter b = new BinaryFormatter();
+            (int[], int, NDarray, NDarray) c = ((int[], int, NDarray, NDarray))b.Deserialize(f);
+            f.Close();
+            return c;
+        }
+
     }
 }

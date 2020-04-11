@@ -16,11 +16,11 @@ namespace NeuralNet2
 
         public static (List<(NDarray, NDarray)>, List<(NDarray, byte)>, List<(NDarray, byte)>) load_data_wrapper()
         {
-            List<(double[,], byte)> tr_d = DeSerializeNow("../../../trainingData.nn");
+            List<(double[,], byte)> tr_d = DeSerializeNow("../../../data/trainingData.nn");
             //List<(double[,], byte)> tr_d = readData(60000, "../../../train-labels.idx1-ubyte", "../../../train-images.idx3-ubyte");
-            List<(double[,], byte)> va_d = DeSerializeNow("../../../validationData.nn");
+            List<(double[,], byte)> va_d = DeSerializeNow("../../../data/validationData.nn");
             //List<(double[,], byte)> va_d = tr_d.GetRange(50000, 10000);
-            List<(double[,], byte)> te_d = DeSerializeNow("../../../testingData.nn");
+            List<(double[,], byte)> te_d = DeSerializeNow("../../../data/testingData.nn");
             //List<(double[,], byte)> te_d = readData(10000, "../../../t10k-labels.idx1-ubyte", "../../../t10k-images.idx3-ubyte");
 
             List<(NDarray, NDarray)> training_data = new List<(NDarray, NDarray)>();
@@ -38,6 +38,17 @@ namespace NeuralNet2
                 NDarray data_nd = np.array(data).reshape(784, 1);
                 validation_data.Add((data_nd, lbl));
             }
+
+            //var (x, y) = te_d[0];
+            //for (int i = 0; i < 28; ++i)
+            //{
+            //    for (int j = 0; j < 28; ++j)
+            //    {
+            //        Debug.Write(string.Format("{0:0.00}", x[i, j]));
+            //    }
+            //    Debug.WriteLine("/");
+            //}
+
             List<(NDarray, byte)> test_data = new List<(NDarray, byte)>();
             foreach (var e in te_d)
             {
@@ -45,6 +56,8 @@ namespace NeuralNet2
                 NDarray data_nd = np.array(data).reshape(784, 1);
                 test_data.Add((data_nd, lbl));
             }
+           
+
             return (training_data,validation_data,test_data);
         }
 
@@ -123,12 +136,12 @@ namespace NeuralNet2
 
         public static void serializeData()
         {
-            var training_data = readData(60000, "../../../train-labels.idx1-ubyte", "../../../train-images.idx3-ubyte");
+            var training_data = readData(60000, "../../../data/train-labels.idx1-ubyte", "../../../train-images.idx3-ubyte");
             var validation_data = training_data.GetRange(50000, 10000);//readData(60000, "../../../train-labels.idx1-ubyte", "../../../train-images.idx3-ubyte");
-            var test_data = readData(10000, "../../../t10k-labels.idx1-ubyte", "../../../t10k-images.idx3-ubyte");
+            var test_data = readData(10000, "../../../data/t10k-labels.idx1-ubyte", "../../../t10k-images.idx3-ubyte");
             SerializeNow(training_data.GetRange(0, 50000), "../../../trainingData.nn");
-            SerializeNow(validation_data, "../../../validationData.nn");
-            SerializeNow(test_data, "../../../testingData.nn");
+            SerializeNow(validation_data, "../../../data/validationData.nn");
+            SerializeNow(test_data, "../../../data/testingData.nn");
         }
 
         public static void SerializeNow(List<(double[,], byte)> data, string fileName)

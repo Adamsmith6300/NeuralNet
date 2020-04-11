@@ -13,3 +13,7 @@ C:\Users\Adam\Documents\code\bcit\term4\COMP4932-DigiPro\Assignment3\NeuralNet2\
 C:\Users\Adam\Documents\code\bcit\term4\COMP4932-DigiPro\Assignment3\NeuralNet2\obj\Debug\netcoreapp3.1\NeuralNet2.csproj.CopyComplete
 C:\Users\Adam\Documents\code\bcit\term4\COMP4932-DigiPro\Assignment3\NeuralNet2\obj\Debug\netcoreapp3.1\NeuralNet2.dll
 C:\Users\Adam\Documents\code\bcit\term4\COMP4932-DigiPro\Assignment3\NeuralNet2\obj\Debug\netcoreapp3.1\NeuralNet2.pdb
+C:\Users\Adam\Documents\code\bcit\term4\COMP4932-DigiPro\Assignment3\NeuralNet2\obj\Debug\netcoreapp3.1\NeuralNet2.Form1.resources
+C:\Users\Adam\Documents\code\bcit\term4\COMP4932-DigiPro\Assignment3\NeuralNet2\obj\Debug\netcoreapp3.1\NeuralNet2.csproj.GenerateResource.cache
+C:\Users\Adam\Documents\code\bcit\term4\COMP4932-DigiPro\Assignment3\NeuralNet2\obj\Debug\netcoreapp3.1\NeuralNet2.csproj.CoreCompileInputs.cache
+C:\Users\Adam\Documents\code\bcit\term4\COMP4932-DigiPro\Assignment3\NeuralNet2\obj\Debug\netcoreapp3.1\NeuralNet2.genruntimeconfig.cache
