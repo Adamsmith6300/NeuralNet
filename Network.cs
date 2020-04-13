@@ -16,6 +16,59 @@ namespace NeuralNet2
         public NDarray biases { get; set; }
         public NDarray weights { get; set; }
         private static Random rng = new Random();
+
+
+        public Network(List<List<List<double>>> newWeights, List<List<List<double>>> newBiases)
+        {
+            //784, 30, 10
+            numLayers = 3;
+            sizes = new int[] { newWeights[0][0].Count, newWeights[0].Count, newWeights[1].Count };
+            
+            List<NDarray> weights0 = new List<NDarray>();
+            for (int i = 0; i < 30; ++i)
+            {
+                weights0.Add(np.array(newWeights[0][i].ToArray()));
+            }
+
+            List<NDarray> weights1 = new List<NDarray>();
+            for (int i = 0; i < 10; ++i)
+            {
+                
+                weights1.Add(np.array(newWeights[1][i].ToArray()));
+            }
+            List<NDarray> weights0And1 = new List<NDarray>();
+            weights0And1.Add(np.array(weights0.ToArray()));
+            weights0And1.Add(np.array(weights1.ToArray()));
+            this.weights = new NDarray(np.array(weights0And1.ToArray()));
+
+            List<NDarray> biases0 = new List<NDarray>();
+            for (int i = 0; i < 30; ++i)
+            {
+                biases0.Add(np.array(newBiases[0][i].ToArray()));
+            }
+
+            List<NDarray> biases1 = new List<NDarray>();
+            for (int i = 0; i < 10; ++i)
+            {
+
+                biases1.Add(np.array(newBiases[1][i].ToArray()));
+            }
+            List<NDarray> biases0And1 = new List<NDarray>();
+            biases0And1.Add(np.array(biases0.ToArray()));
+            biases0And1.Add(np.array(biases1.ToArray()));
+            this.biases = new NDarray(np.array(biases0And1.ToArray()));
+
+            Debug.WriteLine("Weights Shape:");
+            Debug.WriteLine(this.weights.shape);
+            Debug.WriteLine(this.weights[0].shape);
+            Debug.WriteLine(this.weights[1].shape);
+
+            Debug.WriteLine("Biases Shape:");
+            Debug.WriteLine(this.biases.shape);
+            Debug.WriteLine(this.biases[0].shape);
+            Debug.WriteLine(this.biases[1].shape);
+
+        }
         public Network(int[] sizes)
         {
             this.numLayers = sizes.Length;
@@ -288,26 +341,105 @@ namespace NeuralNet2
             return (output_activations - y);
         }
 
-        public static void SerializeNetwork(Network net, string fileName)
+        public void WriteNetwork(string fileName)
         {
-            var data = Tuple.Create(net.sizes, net.numLayers, net.biases, net.weights);
+            
+            int lenWeights = 2;
+            int lenWeights0 = 30;
+            int lenWeights00 = 784;
+            int lenWeights1 = 10;
+            int lenWeights10 = 30;
+
+            int lenBiases = 2;
+            int lenBiases0 = 30;
+            int lenBiases00 = 1;
+            int lenBiases1 = 10;
+            int lenBiases10 = 1;
+
+            List<List<List<double>>> weights = new List<List<List<double>>>();
+            List<List<double>> weights0 = new List<List<double>>();
+            for (int i = 0; i < 30; ++i)
+            {
+                List<double> ls = new List<double>();
+                for (int j = 0; j < 784; ++j)
+                {
+                    double w = (double)this.weights[0][i][j];
+                    //Debug.WriteLine(w);
+                    ls.Add(w);
+                }
+                weights0.Add(ls);
+            }
+            weights.Add(weights0);
+
+            List<List<double>> weights1 = new List<List<double>>();
+            for (int i = 0; i < 10; ++i)
+            {
+                List<double> ls = new List<double>();
+                for (int j = 0; j < 30; ++j)
+                {
+                    double w = (double)this.weights[1][i][j];
+                    //Debug.WriteLine(w);
+                    ls.Add(w);
+                }
+                weights1.Add(ls);
+            }
+            weights.Add(weights1);
+
+            List<List<List<double>>> biases = new List<List<List<double>>>();
+            List<List<double>> biases0 = new List<List<double>>();
+            for (int i = 0; i < 30; ++i)
+            {
+                List<double> ls = new List<double>();
+                for (int j = 0; j < 1; ++j)
+                {
+                    double w = (double)this.biases[0][i][j];
+                    //Debug.WriteLine(w);
+                    ls.Add(w);
+                }
+                biases0.Add(ls);
+            }
+            biases.Add(biases0);
+
+            List<List<double>> biases1 = new List<List<double>>();
+            for (int i = 0; i < 10; ++i)
+            {
+                List<double> ls = new List<double>();
+                for (int j = 0; j < 1; ++j)
+                {
+                    double w = (double)this.biases[1][i][j];
+                    //Debug.WriteLine(w);
+                    ls.Add(w);
+                }
+                biases1.Add(ls);
+            }
+            biases.Add(biases1);
+
             FileStream f =
                  new FileStream(fileName,
                  FileMode.Create);
             BinaryFormatter b = new BinaryFormatter();
-            b.Serialize(f, data);
+            b.Serialize(f, (weights, biases));
             f.Close();
+
+
         }
 
-        public static (int[], int, NDarray, NDarray) DeSerializeNetwork(string fileName)
+        public static (List<List<List<double>>>, List<List<List<double>>>) ReadNetwork(string fileName)
         {
             FileStream f =
                  new FileStream(fileName,
                  FileMode.Open);
             BinaryFormatter b = new BinaryFormatter();
-            (int[], int, NDarray, NDarray) c = ((int[], int, NDarray, NDarray))b.Deserialize(f);
+            (List<List<List<double>>>, List<List<List<double>>>) c = ((List<List<List<double>>>, List<List<List<double>>>))b.Deserialize(f);
             f.Close();
             return c;
+        }
+
+        static byte[] GetBytes(double[] values)
+        {
+            var result = new byte[values.Length * sizeof(double)];
+            Buffer.BlockCopy(values, 0, result, 0, result.Length);
+            return result;
         }
 
     }

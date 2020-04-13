@@ -24,13 +24,19 @@ namespace NeuralNet2
         Bitmap predictionX;
 
         Network net;
+        List<(NDarray, byte)> td;
 
         public Form1()
         {
             var (training_data, validation_data, test_data) = MNIST_loader.load_data_wrapper();
-            net = new Network(new int[] { 784, 30, 10 });
-            net.SGD(training_data, 1, 10, 3.0, test_data);
-            Debug.WriteLine("DONE TRAINING!");
+            this.td = test_data;
+            //net = new Network(new int[] { 784, 30, 10 });
+            //net.SGD(training_data, 2, 10, 3.0, this.td);
+            //Debug.WriteLine("DONE TRAINING!");
+            //net.WriteNetwork("../../../data/network.nn");
+
+            var (weights, biases) = Network.ReadNetwork("../../../data/testNPWrite.nn");
+            net = new Network(weights, biases);
 
             InitializeComponent();
             rand = new Random();
@@ -116,6 +122,17 @@ namespace NeuralNet2
             Debug.WriteLine(prediction);
             textBox1.Text = prediction.ToString();
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            //var (training_data, validation_data, test_data) = MNIST_loader.load_data_wrapper();
+            
+            int passed = net.evaluate(this.td);
+            double percent = ((double)passed / 10000) * 100;
+            Debug.WriteLine("Passed Tests: " + percent + "%");
+            this.Text = "Passed: " + percent.ToString() + " of test data";
+        }
+
 
 
         public void clearPredictionX()
@@ -354,8 +371,8 @@ namespace NeuralNet2
                         { 0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00},
                         { 0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00},
                         { 0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00} };
-      
 
+        
     }
 }
 
