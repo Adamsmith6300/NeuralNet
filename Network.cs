@@ -20,18 +20,17 @@ namespace NeuralNet2
 
         public Network(List<List<List<double>>> newWeights, List<List<List<double>>> newBiases)
         {
-            //784, 30, 10
             numLayers = 3;
             sizes = new int[] { newWeights[0][0].Count, newWeights[0].Count, newWeights[1].Count };
-            
+
             List<NDarray> weights0 = new List<NDarray>();
-            for (int i = 0; i < 30; ++i)
+            for (int i = 0; i < sizes[1]; ++i)
             {
                 weights0.Add(np.array(newWeights[0][i].ToArray()));
             }
 
             List<NDarray> weights1 = new List<NDarray>();
-            for (int i = 0; i < 10; ++i)
+            for (int i = 0; i < sizes[2]; ++i)
             {
                 
                 weights1.Add(np.array(newWeights[1][i].ToArray()));
@@ -42,13 +41,13 @@ namespace NeuralNet2
             this.weights = new NDarray(np.array(weights0And1.ToArray()));
 
             List<NDarray> biases0 = new List<NDarray>();
-            for (int i = 0; i < 30; ++i)
+            for (int i = 0; i < sizes[1]; ++i)
             {
                 biases0.Add(np.array(newBiases[0][i].ToArray()));
             }
 
             List<NDarray> biases1 = new List<NDarray>();
-            for (int i = 0; i < 10; ++i)
+            for (int i = 0; i < sizes[2]; ++i)
             {
 
                 biases1.Add(np.array(newBiases[1][i].ToArray()));
@@ -119,6 +118,8 @@ namespace NeuralNet2
                 foreach (var mini_batch in mini_batches)
                 {
                     update_mini_batch(mini_batch, eta);
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
                 }
                 //if test_data:
                 //        print "Epoch {0}: {1} / {2}".format(
@@ -129,7 +130,7 @@ namespace NeuralNet2
                 {
                     int passed_test = evaluate(test_data);
                     double percent = ((double)passed_test / n_test)*100;
-                    Debug.WriteLine("Testing Epoch " + percent +"%");
+                    Debug.WriteLine("Testing Epoch..." + percent +"%");
                     //if(percent > 93.0)
                     //{
                     //    SerializeNetwork(this, "../../../data/network.nn");
@@ -137,7 +138,7 @@ namespace NeuralNet2
                     //}
                 } else
                 {
-                    Debug.WriteLine("Epoch " + i + " complete.");
+                    Debug.WriteLine("Epoch " + (i+1) + " complete.");
                 }
             }
 
@@ -343,25 +344,13 @@ namespace NeuralNet2
 
         public void WriteNetwork(string fileName)
         {
-            
-            int lenWeights = 2;
-            int lenWeights0 = 30;
-            int lenWeights00 = 784;
-            int lenWeights1 = 10;
-            int lenWeights10 = 30;
-
-            int lenBiases = 2;
-            int lenBiases0 = 30;
-            int lenBiases00 = 1;
-            int lenBiases1 = 10;
-            int lenBiases10 = 1;
 
             List<List<List<double>>> weights = new List<List<List<double>>>();
             List<List<double>> weights0 = new List<List<double>>();
-            for (int i = 0; i < 30; ++i)
+            for (int i = 0; i < sizes[1]; ++i)
             {
                 List<double> ls = new List<double>();
-                for (int j = 0; j < 784; ++j)
+                for (int j = 0; j < sizes[0]; ++j)
                 {
                     double w = (double)this.weights[0][i][j];
                     //Debug.WriteLine(w);
@@ -372,10 +361,10 @@ namespace NeuralNet2
             weights.Add(weights0);
 
             List<List<double>> weights1 = new List<List<double>>();
-            for (int i = 0; i < 10; ++i)
+            for (int i = 0; i < sizes[2]; ++i)
             {
                 List<double> ls = new List<double>();
-                for (int j = 0; j < 30; ++j)
+                for (int j = 0; j < sizes[1]; ++j)
                 {
                     double w = (double)this.weights[1][i][j];
                     //Debug.WriteLine(w);
@@ -387,7 +376,7 @@ namespace NeuralNet2
 
             List<List<List<double>>> biases = new List<List<List<double>>>();
             List<List<double>> biases0 = new List<List<double>>();
-            for (int i = 0; i < 30; ++i)
+            for (int i = 0; i < sizes[1]; ++i)
             {
                 List<double> ls = new List<double>();
                 for (int j = 0; j < 1; ++j)
@@ -401,13 +390,12 @@ namespace NeuralNet2
             biases.Add(biases0);
 
             List<List<double>> biases1 = new List<List<double>>();
-            for (int i = 0; i < 10; ++i)
+            for (int i = 0; i < sizes[2]; ++i)
             {
                 List<double> ls = new List<double>();
                 for (int j = 0; j < 1; ++j)
                 {
                     double w = (double)this.biases[1][i][j];
-                    //Debug.WriteLine(w);
                     ls.Add(w);
                 }
                 biases1.Add(ls);
@@ -421,7 +409,6 @@ namespace NeuralNet2
             b.Serialize(f, (weights, biases));
             f.Close();
 
-
         }
 
         public static (List<List<List<double>>>, List<List<List<double>>>) ReadNetwork(string fileName)
@@ -433,13 +420,6 @@ namespace NeuralNet2
             (List<List<List<double>>>, List<List<List<double>>>) c = ((List<List<List<double>>>, List<List<List<double>>>))b.Deserialize(f);
             f.Close();
             return c;
-        }
-
-        static byte[] GetBytes(double[] values)
-        {
-            var result = new byte[values.Length * sizeof(double)];
-            Buffer.BlockCopy(values, 0, result, 0, result.Length);
-            return result;
         }
 
     }

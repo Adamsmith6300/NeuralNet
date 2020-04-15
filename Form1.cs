@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Numpy;
@@ -25,22 +26,52 @@ namespace NeuralNet2
 
         Network net;
         List<(NDarray, byte)> td;
+        List<(NDarray, NDarray)> trd;
+
+        int hidden_neurons = 30;
+        int _epochs = 5;
+        int mini_batches = 10;
+        Decimal learning_rate = 3.0M;
 
         public Form1()
         {
             var (training_data, validation_data, test_data) = MNIST_loader.load_data_wrapper();
+            this.trd = training_data;
             this.td = test_data;
+
+            //new network
             //net = new Network(new int[] { 784, 30, 10 });
             //net.SGD(training_data, 2, 10, 3.0, this.td);
             //Debug.WriteLine("DONE TRAINING!");
             //net.WriteNetwork("../../../data/network.nn");
 
-            var (weights, biases) = Network.ReadNetwork("../../../data/testNPWrite.nn");
+
+            var (weights, biases) = Network.ReadNetwork("../../../data/network.nn");
             net = new Network(weights, biases);
 
+
             InitializeComponent();
+
             rand = new Random();
             textBox1.ReadOnly = true;
+            numericUpDown1.Minimum = 11;
+            numericUpDown1.Maximum = 200;
+            numericUpDown1.Value = hidden_neurons;
+
+            numericUpDown2.Minimum = 1;
+            numericUpDown2.Maximum = 100;
+            numericUpDown2.Value = _epochs;
+
+            numericUpDown3.Minimum = 1;
+            numericUpDown3.Maximum = 20;
+            numericUpDown3.Value = mini_batches;
+
+            numericUpDown4.DecimalPlaces = 3;
+            numericUpDown4.Minimum = 0.001M;
+            numericUpDown4.Maximum = 1000;
+            numericUpDown4.Value = learning_rate;
+
+
             points = new ArrayList();
             penDown = false;
             g = panel1.CreateGraphics();
@@ -125,15 +156,35 @@ namespace NeuralNet2
 
         private void button3_Click(object sender, EventArgs e)
         {
-            //var (training_data, validation_data, test_data) = MNIST_loader.load_data_wrapper();
-            
             int passed = net.evaluate(this.td);
             double percent = ((double)passed / 10000) * 100;
             Debug.WriteLine("Passed Tests: " + percent + "%");
-            this.Text = "Passed: " + percent.ToString() + " of test data";
+            this.Text = "Passed: " + percent.ToString() + "% of test data";
         }
 
+        private void button4_Click(object sender, EventArgs e)
+        {
+            hidden_neurons = (int)numericUpDown1.Value;
+            _epochs = (int)numericUpDown2.Value;
+            mini_batches = (int)numericUpDown3.Value;
+            learning_rate = numericUpDown4.Value;
 
+            //this.SuspendLayout();
+            net = new Network(new int[] { 784, hidden_neurons, 10 });
+            net.SGD(trd, _epochs, mini_batches, (double)learning_rate, null);
+            Debug.WriteLine("DONE TRAINING!");
+            this.Text = "Network Created...Benchmark Network to see results.";
+            //net.WriteNetwork("../../../data/network.nn");
+            //this.ResumeLayout();
+
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            var (weights, biases) = Network.ReadNetwork("../../../data/network.nn");
+            net = new Network(weights, biases);
+            this.Text = "Network Loaded from file...Benchmark Network to see results.";
+        }
 
         public void clearPredictionX()
         {
@@ -372,56 +423,5 @@ namespace NeuralNet2
                         { 0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00},
                         { 0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00} };
 
-        
     }
 }
-
-
-//MNIST_loader.serializeData();
-
-//var (training_data, validation_data, test_data) = MNIST_loader.load_data_wrapper();
-//Network net = new Network(new int[] { 784, 30, 10 });
-//net.SGD(training_data, 1, 10, 3.0, test_data);
-
-
-//Debug.WriteLine(net.weights[0].shape);//(2)(30,784)
-
-//NDarray a = np.array(new int[,] { { 1, 2, 3 }, { 4, 5, 6 } });
-//Debug.WriteLine(a.shape);
-
-//a.tofile("../../../data/testNPWrite.txt", "", "%d");
-//Debug.WriteLine(b.ToString());
-
-//double[][][] wd = new double[net.weights.size][][];
-//for (int i = 0; i < net.weights.size; ++i)
-//{
-//    wd[i] = new double[net.weights[i].size][];
-//    for (int j = 0; j < net.weights[i].size; ++j)
-//    {
-//        wd[i][j] = new double[net.weights[i][j].size];
-//        for(int k = 0; k < net.weights[i][j].size; ++k)
-//        {
-//            wd[i][j][k] = (double)net.weights[i][j][k];
-//            //Debug.WriteLine(net.weights[i][j]);
-//        }
-//    }
-//}
-//var w = net.weights.GetData<double[][]>();
-////Debug.WriteLine(w);
-////Debug.WriteLine(w.Length);
-
-//FileStream f =
-//     new FileStream("../../../data/network.nn",
-//     FileMode.Create);
-//BinaryFormatter b = new BinaryFormatter();
-//b.Serialize(f, (net.sizes, net.numLayers, w));
-//f.Close();
-
-//FileStream f2 =
-//     new FileStream("../../../data/network.nn",
-//     FileMode.Open);
-//BinaryFormatter b2 = new BinaryFormatter();
-//var (x, y, z) = ((int[], int, double[][]))b2.Deserialize(f2);
-//f2.Close();
-
-//Debug.WriteLine(np.array(z));
